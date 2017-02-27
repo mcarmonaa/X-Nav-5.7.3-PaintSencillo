@@ -1,13 +1,15 @@
 /* Asociamos función canvasApp a carga de página */
-window.addEventListener('load', canvasApp, false);	
+window.addEventListener('load', canvasApp, false);
 
-function canvasApp(){  
+function canvasApp(){
     /* Inicializamos el canvas */
 	var theCanvas = document.getElementById('canvas');
 	var context = theCanvas.getContext('2d');
 
     /* Inicializamos el valor del color */
 	var colorChosen = document.getElementById("color_chosen");
+
+    var widthChosen = document.getElementById('line_width_chosen');
 
     /* Tomamos los botones de colores por su id */
 	var redButton = document.getElementById("Red");
@@ -26,6 +28,21 @@ function canvasApp(){
 	  var color_button_selected = e.target;
 	  var color_id = color_button_selected.getAttribute('id');
 	  colorChosen.innerHTML = color_id;
+    }
+
+
+	var oneButton = document.getElementById("one");
+	var tenButton = document.getElementById("ten");
+	var fiftyButton = document.getElementById("fifty");
+
+    oneButton.addEventListener('click', widthPressed, false);
+    tenButton.addEventListener('click', widthPressed, false);
+    fiftyButton.addEventListener('click', widthPressed, false);
+
+    function widthPressed(e) {
+	  var width_button_selected = e.target;
+	  var width_value = width_button_selected.getAttribute('value');
+	  widthChosen.innerHTML = width_value;
     }
 
     /* Botón de reseteo */
@@ -59,15 +76,20 @@ function canvasApp(){
     }
 
     function mouse_moved(ev) {
-	  var x, y;	
+	  var x, y;
+      // Get the canvas elemet's offset related to the top left corner of the viewport
+      var offsetX = theCanvas.getBoundingClientRect().x;
+      var offsetY = theCanvas.getBoundingClientRect().y;
 	  // Get the mouse position in the canvas
-	  x = ev.pageX;
-	  y = ev.pageY;
+	  x = ev.pageX - offsetX;
+	  y = ev.pageY - offsetY;
 
 	  if (begin_drawing) {
 	    context.beginPath();
 	    context.arc(x, y, 7, (Math.PI/180)*0, (Math.PI/180)*360, false);
-	    context.fill();
+        context.lineWidth = parseInt(widthChosen.innerHTML);
+        context.stroke();
+        context.fill();
         context.closePath();
 	  }
     }
